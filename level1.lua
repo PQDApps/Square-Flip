@@ -3,11 +3,15 @@
 -- level1.lua
 --
 -----------------------------------------------------------------------------------------
-
+--Requires and imports
 local composer = require( "composer" )
 local scene = composer.newScene()
+
+
+--Variables to help place display objects
 local _W = display.contentWidth
 local _H = display.contentHeight
+
 --------------------------------------------
 
 -- forward declarations and other locals
@@ -34,7 +38,7 @@ function scene:create( event )
 	background = display.newRect( 0, 0, _W, _H )
 	background.x = _W/2
 	background.y = _H/2
-	background:setFillColor( 0.5, 0.5, 1 )
+	background:setFillColor( 0.2, 0.5, 1 )
 
 	highScore = display.newText("High Score", 0, 0, native.systemFont, 20)
 	highScore.x = _W/2-(_W/4)
@@ -52,7 +56,8 @@ function scene:create( event )
 	currentText.x = currentScore.x
 	currentText.y = currentScore.y+30
 	
-	square = display.newRect( 0, 0, 130, 130 )
+	--square = display.newRect( 0, 0, 130, 130 )
+	square = display.newImageRect( "images/square.png", 130, 130 )
 	square.x = _W/2
 	square.y = _H/2+25
 
@@ -62,6 +67,18 @@ function scene:create( event )
 	-- all display objects must be inserted into group
 end
 
+local flippable = true
+local function flipSquare(event)
+	if event.phase == 'ended' and flippable == true then
+		--square.rotation = square.rotation + 90
+		flippable = false
+		transition.to( square, { rotation=square.rotation+90, time=150, transition=easing.inOutCubic } )
+		local function allowFlip( event )
+			flippable = true
+		end
+		timer.performWithDelay( 150, allowFlip , 1 )
+	end
+end
 
 function scene:show( event )
 	local sceneGroup = self.view
@@ -74,7 +91,7 @@ function scene:show( event )
 		-- 
 		-- INSERT code here to make the scene come alive
 		-- e.g. start timers, begin animation, play audio, etc.
-		physics.start()
+		Runtime:addEventListener("touch", flipSquare)
 	end
 end
 
@@ -88,7 +105,6 @@ function scene:hide( event )
 		--
 		-- INSERT code here to pause the scene
 		-- e.g. stop timers, stop animation, unload sounds, etc.)
-		physics.stop()
 	elseif phase == "did" then
 		-- Called when the scene is now off screen
 	end	
