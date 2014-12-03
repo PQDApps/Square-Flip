@@ -17,9 +17,8 @@ local playBtn
 
 -- 'onRelease' event listener for playBtn
 local function onPlayBtnRelease()
-	
 	-- go to level1.lua scene
-	composer.gotoScene( "level1", "fade", 500 )
+	composer.gotoScene( "level1", "fade", 150 )
 	
 	return true	-- indicates successful touch
 end
