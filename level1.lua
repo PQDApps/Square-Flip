@@ -62,8 +62,9 @@ function moveBall(event)
 			transition.to(highText, {time = 400, x=_W/2-(_W/4), y= 95})
 			transition.to(currentScore, {time = 400, x=_W/2+(_W/4), y= 50})
 			transition.to(currentText, {time = 400, x=_W/2+(_W/4), y= 95})
-			--transition.to(rectangleBg, {time = 400, x=_W/2})
-			transition.to(rectangleBg, {time = 200, alpha = 0.8})
+			gameOver.alpha = 1
+			transition.to(gameOver, {time = 700, size = 60, y = 400})			
+			transition.to(rectangleBg, {time = 300, alpha = 0.8})
 			--rectangleBg.alpha = .8
 			transition.to(continue, {time = 400, x=_W/2})
 			transition.to(leaderboards, {time = 400, x=_W/2})
@@ -89,7 +90,7 @@ function leaderboardsPress ( event )
 end
 
 function restartPress( event )
-	
+
 	return true
 end
 
@@ -168,6 +169,12 @@ function scene:create( event )
 	}	
 	restart.x = -120
 	restart.y = _H/2+40
+
+	gameOver = display.newText("G A M E  O V E R", 0, 0, "Bebas Neue", 80)
+	gameOver.x = _W/2
+	gameOver.y = _H/2
+	gameOver:setFillColor( 1,0,0 )
+	gameOver.alpha = 0
 
 	rectangleBg = display.newRect( 0, 0, _W, _H )
 	rectangleBg.x = _W/2
