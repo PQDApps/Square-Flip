@@ -29,6 +29,10 @@ local highText
 local currentScore
 local currentText
 local circle
+local triangleOne
+local triangleTwo
+local triangleThree
+local triangleFour
 local color = 1 --Used to keep track of the triangle color
 local rando = math.random(1,4) --Random number used to color ball
 local ballMove = false
@@ -63,45 +67,48 @@ function scene:create( event )
 	background = display.newRect( 0, 0, _W, _H )
 	background.x = _W/2
 	background.y = _H/2
-	background:setFillColor( 0.2, 0.5, 1 )
+	background:setFillColor( ragdogLib.convertHexToRGB("#242415") )
 
-	highScore = display.newText("High Score", 0, 0, native.systemFont, 20)
+	highScore = display.newText("H I G H  S C O R E", 0, 0, "Bebas Neue", 20)
 	highScore.x = _W/2-(_W/4)
 	highScore.y = 50
+	highScore.alpha = 0
 
-	highText = display.newText( high, 0, 0, native.systemFont, 20)
+	highText = display.newText( high, 0, 0, "04B_19", 50)
 	highText.x = highScore.x
 	highText.y = highScore.y+30
+	highText.alpha=0
 
-	currentScore = display.newText("Score", 0, 0, native.systemFont, 20)
+	currentScore = display.newText("S C O R E", 0, 0, "Bebas Neue", 20)
 	currentScore.x = _W/2+(_W/4)
 	currentScore.y = 50
+	currentScore.alpha = 0
 
-	currentText = display.newText( current, 0, 0, native.systemFont, 20)
-	currentText.x = currentScore.x
-	currentText.y = currentScore.y+30
+	currentText = display.newText( current, 0, 0, "04B_19", 70)
+	currentText.x = _W/2
+	currentText.y = 100
 	
 	triangleOne = display.newImageRect(  "images/triangle.png", 130, 65 )
 	triangleOne.x = _W/2
-	triangleOne.y = _H/2-42
+	triangleOne.y = _H/2
 	triangleOne:setFillColor( ragdogLib.convertHexToRGB(_G.ballPalette[1]) )
 
 	triangleTwo = display.newImageRect(  "images/triangle.png", 130, 65 )
 	triangleTwo.rotation = -90
-	triangleTwo.x = _W/2-42
-	triangleTwo.y = _H/2
+	triangleTwo.x = triangleOne.x-42
+	triangleTwo.y = triangleOne.y+42
 	triangleTwo:setFillColor( ragdogLib.convertHexToRGB(_G.ballPalette[2]) )
 
 	triangleThree = display.newImageRect(  "images/triangle.png", 130, 65 )
 	triangleThree.rotation = 180
-	triangleThree.x = _W/2
-	triangleThree.y = _H/2+42
+	triangleThree.x = triangleTwo.x+42
+	triangleThree.y = triangleTwo.y+42
 	triangleThree:setFillColor( ragdogLib.convertHexToRGB(_G.ballPalette[3]) )
 
 	triangleFour = display.newImageRect(  "images/triangle.png", 130, 65 )
 	triangleFour.rotation = 90
-	triangleFour.x = _W/2+42
-	triangleFour.y = _H/2
+	triangleFour.x = triangleThree.x+42
+	triangleFour.y = triangleThree.y-42
 	triangleFour:setFillColor( ragdogLib.convertHexToRGB(_G.ballPalette[4]) )
 
 	circle = display.newCircle( 0, 0, 10 )
@@ -163,7 +170,7 @@ function scene:show( event )
 		-- INSERT code here to make the scene come alive
 		-- e.g. start timers, begin animation, play audio, etc.
 		background:addEventListener("touch", flipSquare)
-		circle:applyLinearImpulse( 0, 1, circle.x, circle.y )
+		circle:applyLinearImpulse( 0, math.random(.5,2.0), circle.x, circle.y )
 		Runtime:addEventListener("enterFrame", moveBall)
 	end
 end

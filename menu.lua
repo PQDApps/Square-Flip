@@ -5,6 +5,7 @@
 -----------------------------------------------------------------------------------------
 
 local composer = require( "composer" )
+local ragdogLib = require ("ragdogLib")
 local scene = composer.newScene()
 
 -- include Corona's "widget" library
@@ -14,6 +15,8 @@ local widget = require "widget"
 
 -- forward declarations and other locals
 local playBtn
+local _W = display.contentWidth
+local _H = display.contentHeight
 
 -- 'onRelease' event listener for playBtn
 local function onPlayBtnRelease()
@@ -32,27 +35,32 @@ function scene:create( event )
 	-- e.g. add display objects to 'sceneGroup', add touch listeners, etc.
 
 	-- display a background image
-	local background = display.newImageRect( "background.jpg", display.contentWidth, display.contentHeight )
+	local background = display.newRect( 0, 0, _W, _H )
+	background:setFillColor( ragdogLib.convertHexToRGB("#242415")  )
 	background.anchorX = 0
 	background.anchorY = 0
 	background.x, background.y = 0, 0
 	
 	-- create/position logo/title image on upper-half of the screen
-	local titleLogo = display.newImageRect( "logo.png", 264, 42 )
-	titleLogo.x = display.contentWidth * 0.5
-	titleLogo.y = 100
+	local titleLogo = display.newText("SQUARE FLIP",0,0,"Bebas Neue", 60)
+	titleLogo.x = _W/2
+	titleLogo.y = _H/2-50
+	titleLogo:setFillColor( 65/255, 65/255, 65/255 )
 	
 	-- create a widget button (which will loads level1.lua on release)
 	playBtn = widget.newButton{
-		label="Play Now",
+		label="P L A Y",
+		font="Bebas Neue",
 		labelColor = { default={255}, over={128} },
-		default="button.png",
-		over="button-over.png",
-		width=154, height=40,
+		fontSize=38,
+		--defaultFile="button.png",
+		--overFile="button-over.png",
+		width=154, 
+		height=40,
 		onRelease = onPlayBtnRelease	-- event listener function
 	}
-	playBtn.x = display.contentWidth*0.5
-	playBtn.y = display.contentHeight - 125
+	playBtn.x = _W/2
+	playBtn.y = _H/2+15
 	
 	-- all display objects must be inserted into group
 	sceneGroup:insert( background )

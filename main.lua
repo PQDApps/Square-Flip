@@ -9,10 +9,10 @@ display.setStatusBar( display.HiddenStatusBar )
 
 local ragdogLib = require "ragdogLib"
 _G.ballPalette = {
-	"#00ff2f",
-	"#ff00c8",
-	"#7b00ff",
-	"#ff8f33",
+	"#5CC8FF",
+	"#FF220C",
+	"#4DFF4D",
+	"#F6F930",
 }
 
 -- include the Corona "composer" module
