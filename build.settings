@@ -30,7 +30,7 @@ settings = {
             UIAppFonts =
             {
                 "BebasNeue.otf",
-                "04B_19__.ttf"
+                "04B_19__.TTF"
             },
 		}
 	},
