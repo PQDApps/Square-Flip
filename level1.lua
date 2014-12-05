@@ -54,6 +54,8 @@ local ballMove = false
 local multiplier = 1
 local multiplierText
 local celebrateHigh
+local multiplierRect
+local counter = 0
 
 --FUNCTIONS
 function moveBall(event)
@@ -63,6 +65,15 @@ function moveBall(event)
 		circle.y = math.random(-200, 0)
 		circle:setLinearVelocity( 0, 0 )
 		if circle.number == color then
+			counter = counter+1
+			if counter < 10 then
+				transition.to(multiplierRect, {time = 200, width = multiplierRect.width+_W/10, transition=easing.outElastic})
+			elseif counter == 10 then
+				counter = 0
+				transition.to(multiplierRect, {time = 800, width = 0, transition=easing.outElastic})
+				multiplier = multiplier + 1
+				multiplierText.text = multiplier.."x"	
+			end
 			circle:applyLinearImpulse( 0, math.random(15,30), circle.x, circle.y )
 			current = current + 1 * multiplier
 			currentText.text = current
@@ -79,9 +90,9 @@ function moveBall(event)
 				transition.blink( celebrateHigh, {time=1500} )
 			end
 			transition.to(highScore, {time = 400, x=_W/2-(_W/4), y= 50})
-			transition.to(highText, {time = 400, x=_W/2-(_W/4), y= 95})
+			transition.to(highText, {time = 400, x=_W/2-(_W/4), y= 95, size=40})
 			transition.to(currentScore, {time = 400, x=_W/2+(_W/4), y= 50})
-			transition.to(currentText, {time = 400, x=_W/2+(_W/4), y= 95})
+			transition.to(currentText, {time = 400, x=_W/2+(_W/4), y= 95, size=40})
 			gameOver.alpha = 1
 			transition.to(gameOver, {time = 600, size = 60, y = 400})
 			transition.blink( gameOver, {time=1500} )			
@@ -208,6 +219,16 @@ function scene:create( event )
 	rectangleBg.y = _H/2
 	rectangleBg:setFillColor( ragdogLib.convertHexToRGB("#000000") )
 	rectangleBg.alpha = 0
+
+	multiplierText = display.newText(multiplier.."x", 0, 0, "Bebas Neue", 30)
+	multiplierText.x = _W/2
+	multiplierText.y = _H-70
+
+	multiplierRect = display.newRect( 0, 0, 0, 60 )
+	multiplierRect.anchorX = 0
+	multiplierRect.x = 0
+	multiplierRect.y = multiplierText.y
+	multiplierRect:setFillColor( 1,0,1 )
 	
 	triangleOne = display.newImageRect(  "images/triangle.png", 130, 65 )
 	triangleOne.x = _W/2
@@ -246,6 +267,8 @@ function scene:create( event )
 	sceneGroup:insert( triangleTwo )
 	sceneGroup:insert( triangleThree )
 	sceneGroup:insert( triangleFour )
+	sceneGroup:insert( multiplierRect )
+	sceneGroup:insert( multiplierText )
 	sceneGroup:insert( rectangleBg )
 	sceneGroup:insert( highScore )
 	sceneGroup:insert( highText )
