@@ -17,6 +17,14 @@ physics.setGravity( 0, 0 )
 local _W = display.contentWidth
 local _H = display.contentHeight
 
+local path = system.pathForFile( "highscore.json", system.DocumentsDirectory )
+
+local file = io.open( path, "r" )
+local highNumber = file:read( "*n" )
+
+io.close( file )
+file = nil
+
 --------------------------------------------
 
 -- forward declarations and other locals
@@ -45,6 +53,7 @@ local rando = math.random(1,4) --Random number used to color ball
 local ballMove = false
 local multiplier = 1
 local multiplierText
+local celebrateHigh
 
 --FUNCTIONS
 function moveBall(event)
@@ -58,12 +67,24 @@ function moveBall(event)
 			current = current + 1 * multiplier
 			currentText.text = current
 		else
+			local path = system.pathForFile( "highscore.json", system.DocumentsDirectory )
+			local file = io.open( path , "r" )
+			if current > highNumber then
+				local path = system.pathForFile( "highscore.json", system.DocumentsDirectory )
+				local file = io.open( path , "w" )
+				file:write( current )
+				io.close( file )
+				file = nil
+				celebrateHigh.alpha = 1
+				transition.blink( celebrateHigh, {time=1500} )
+			end
 			transition.to(highScore, {time = 400, x=_W/2-(_W/4), y= 50})
 			transition.to(highText, {time = 400, x=_W/2-(_W/4), y= 95})
 			transition.to(currentScore, {time = 400, x=_W/2+(_W/4), y= 50})
 			transition.to(currentText, {time = 400, x=_W/2+(_W/4), y= 95})
 			gameOver.alpha = 1
-			transition.to(gameOver, {time = 700, size = 60, y = 400})			
+			transition.to(gameOver, {time = 600, size = 60, y = 400})
+			transition.blink( gameOver, {time=1500} )			
 			transition.to(rectangleBg, {time = 300, alpha = 0.8})
 			--rectangleBg.alpha = .8
 			transition.to(continue, {time = 400, x=_W/2})
@@ -90,7 +111,7 @@ function leaderboardsPress ( event )
 end
 
 function restartPress( event )
-
+	composer.gotoScene( "restart", "fade", 150 )
 	return true
 end
 
@@ -105,7 +126,7 @@ function scene:create( event )
 	background = display.newRect( 0, 0, _W, _H )
 	background.x = _W/2
 	background.y = _H/2
-	background:setFillColor( ragdogLib.convertHexToRGB("#242415") )
+	background:setFillColor( ragdogLib.convertHexToRGB("#272D2D") )
 
 	highScore = display.newText("H I G H  S C O R E", 0, 0, "Bebas Neue", 20)
 	highScore.x = _W/2-(_W/4)
@@ -113,7 +134,7 @@ function scene:create( event )
 	highScore:setFillColor(65/255, 65/255, 65/255)
 	--highScore.alpha = 0
 
-	highText = display.newText( high, 0, 0, "04B_19", 70)
+	highText = display.newText( highNumber, 0, 0, "04B_19", 70)
 	highText.x = highScore.x
 	highText.y = highScore.y+45
 	--highText.alpha=0
@@ -129,7 +150,7 @@ function scene:create( event )
 	currentText.y = 100
 
 	continue = widget.newButton{
-		label="C O N T I N U E ?",
+		label="C O N T I N U E  ?",
 		font="Bebas Neue",
 		labelColor = { default={255}, over={128} },
 		fontSize=38,
@@ -175,6 +196,12 @@ function scene:create( event )
 	gameOver.y = _H/2
 	gameOver:setFillColor( 1,0,0 )
 	gameOver.alpha = 0
+
+	celebrateHigh = display.newText("NEW HIGH SCORE", 0, 0, "Bebas Neue", 50)
+	celebrateHigh.x = _W/2
+	celebrateHigh.y = _H/2-100
+	celebrateHigh.alpha = 0
+	celebrateHigh:setFillColor( 0,1,0 )
 
 	rectangleBg = display.newRect( 0, 0, _W, _H )
 	rectangleBg.x = _W/2
@@ -227,19 +254,21 @@ function scene:create( event )
 	sceneGroup:insert( continue )
 	sceneGroup:insert( leaderboards )
 	sceneGroup:insert( restart )
+	sceneGroup:insert( gameOver )
+	sceneGroup:insert( celebrateHigh )
 end
 
-
+local ease = easing.inQuint
 --Rotate the square 90 degrees
 local flippable = true
 local function flipSquare(event)
 	if event.phase == 'ended' then
 		if flippable == true then
 			flippable = false
-			transition.to( triangleFour, { time=100, x=triangleThree.x, y=triangleThree.y, rotation=triangleThree.rotation, transition=easing.inOutCubic } )
-			transition.to( triangleThree, { time=100, x=triangleTwo.x, y=triangleTwo.y, rotation=triangleTwo.rotation, transition=easing.inOutCubic } )
-			transition.to( triangleTwo, { time=100, x=triangleOne.x, y=triangleOne.y, rotation=triangleOne.rotation, transition=easing.inOutCubic } )
-			transition.to( triangleOne, { time=100, x=triangleFour.x, y=triangleFour.y, rotation=triangleFour.rotation, transition=easing.inOutCubic } )
+			transition.to( triangleFour, { time=100, x=triangleThree.x, y=triangleThree.y, rotation=triangleThree.rotation, transition=ease } )
+			transition.to( triangleThree, { time=100, x=triangleTwo.x, y=triangleTwo.y, rotation=triangleTwo.rotation, transition=ease } )
+			transition.to( triangleTwo, { time=100, x=triangleOne.x, y=triangleOne.y, rotation=triangleOne.rotation, transition=ease } )
+			transition.to( triangleOne, { time=100, x=triangleFour.x, y=triangleFour.y, rotation=triangleFour.rotation, transition=ease } )
 			if color < 4 then
 			color = color + 1
 			elseif color == 4 then
@@ -283,6 +312,9 @@ function scene:hide( event )
 		--
 		-- INSERT code here to pause the scene
 		-- e.g. stop timers, stop animation, unload sounds, etc.)
+		background:removeEventListener("touch", flipSquare)
+		--circle:applyLinearImpulse( 0, math.random(5,20), circle.x, circle.y )
+		Runtime:removeEventListener("enterFrame", moveBall)
 	elseif phase == "did" then
 		-- Called when the scene is now off screen
 	end	

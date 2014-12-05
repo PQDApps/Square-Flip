@@ -33,39 +33,6 @@ function scene:create( event )
 	-- 
 	-- INSERT code here to initialize the scene
 	-- e.g. add display objects to 'sceneGroup', add touch listeners, etc.
-
-	-- display a background image
-	local background = display.newRect( 0, 0, _W, _H )
-	background:setFillColor( ragdogLib.convertHexToRGB("#272D2D")  )-- 048A81
-	background.anchorX = 0
-	background.anchorY = 0
-	background.x, background.y = 0, 0
-	
-	-- create/position logo/title image on upper-half of the screen
-	local titleLogo = display.newText("SQUARE FLIP",0,0,"Bebas Neue", 60)
-	titleLogo.x = _W/2
-	titleLogo.y = _H/2-50
-	titleLogo:setFillColor( 65/255, 65/255, 65/255 )
-	
-	-- create a widget button (which will loads level1.lua on release)
-	playBtn = widget.newButton{
-		label="P L A Y",
-		font="Bebas Neue",
-		labelColor = { default={255}, over={128} },
-		fontSize=38,
-		--defaultFile="button.png",
-		--overFile="button-over.png",
-		width=154, 
-		height=40,
-		onRelease = onPlayBtnRelease	-- event listener function
-	}
-	playBtn.x = _W/2
-	playBtn.y = _H/2+15
-	
-	-- all display objects must be inserted into group
-	sceneGroup:insert( background )
-	sceneGroup:insert( titleLogo )
-	sceneGroup:insert( playBtn )
 end
 
 function scene:show( event )
@@ -74,11 +41,13 @@ function scene:show( event )
 	
 	if phase == "will" then
 		-- Called when the scene is still off screen and is about to move on screen
+		composer.removeScene( "level1" )
 	elseif phase == "did" then
 		-- Called when the scene is now on screen
 		-- 
 		-- INSERT code here to make the scene come alive
 		-- e.g. start timers, begin animation, play audio, etc.
+		composer.gotoScene( "level1", "fade", 150 )
 	end	
 end
 
@@ -93,6 +62,7 @@ function scene:hide( event )
 		-- e.g. stop timers, stop animation, unload sounds, etc.)
 	elseif phase == "did" then
 		-- Called when the scene is now off screen
+
 	end	
 end
 
